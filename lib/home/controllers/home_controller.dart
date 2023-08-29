@@ -6,7 +6,6 @@ import '../vms/city_weather_vm.dart';
 // home page controller (prints for demonstration in production user logger)
 class HomeController extends GetxController {
   final repo = WeatherAppRepository();
-  var auxCityWeathers = [];
   var cityWeathers = [].obs;
   Future<void> addCityWeathers(String text) async {
     final response = await repo.searchCities(searchText: text);
@@ -15,7 +14,7 @@ class HomeController extends GetxController {
         // handle error
       },
       (searchResults) async {
-        auxCityWeathers.clear();
+        cityWeathers.clear();
         for (final geoResult in searchResults.results) {
           print("NAME: ${geoResult.name}");
 
@@ -26,7 +25,7 @@ class HomeController extends GetxController {
               print("error with getWeatherLatLon response $error");
             },
             (cityWeather) {
-              auxCityWeathers.add(
+              cityWeathers.add(
                 CityWeatherVM(
                   name: geoResult.name,
                   country: geoResult.country,
@@ -34,11 +33,10 @@ class HomeController extends GetxController {
                   windspeed: cityWeather.currentWeather.windspeed,
                 ),
               );
-              print("LIST weather: \n $auxCityWeathers");
+              print("LIST weather: \n $cityWeathers");
             },
           );
         }
-        cityWeathers.assignAll(auxCityWeathers);
       },
     );
   }
